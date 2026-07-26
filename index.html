@@ -258,18 +258,12 @@ https://static.wixstatic.com/mp3/d89c2f_7d1a3ec1dc8f45e493e403019cb1278d.mp3	Fre
     const artistName = document.getElementById('artist-name');
     let currentTrackIndex = 0;
 
-    function toggleMenu() {
-        const isDisplayed = menuItems.style.display === 'block';
-        menuItems.style.display = isDisplayed ? 'none' : 'block';
-    }
-
-    window.onclick = function(event) {
-        if (!event.target.matches('.toggle-btn')) {
-            menuItems.style.display = 'none';
-        }
-    }
-
+    // CORE LOADER ENGINE
     function loadTrack(index) {
+        // Safe boundaries looping shield
+        if (index < 0) index = tracks.length - 1;
+        if (index >= tracks.length) index = 0;
+        
         for (let i = 0; i < tracks.length; i++) {
             tracks[i].classList.remove('active');
         }
@@ -277,30 +271,37 @@ https://static.wixstatic.com/mp3/d89c2f_7d1a3ec1dc8f45e493e403019cb1278d.mp3	Fre
         const selectedTrack = tracks[index];
         selectedTrack.classList.add('active');
         
+        // Connect the direct Wix streaming path
         audioPlayer.src = selectedTrack.getAttribute('data-src');
-        songTitle.textContent = selectedTrack.textContent;
+        
+        // FIXED DATA LINK: Tells the computer to read your Excel's exact "data-title" variable directly!
+        let titleAttr = selectedTrack.getAttribute('data-title');
+        songTitle.textContent = titleAttr || "Unknown Title";
+        
+        // Connect the artist tag details
         artistName.textContent = selectedTrack.getAttribute('data-artist') || 'Unknown Artist';
         currentTrackIndex = index;
     }
 
-    for (let i = 0; i < tracks.length; i++) {
-        tracks[i].addEventListener('click', function() {
-            loadTrack(i);
-            audioPlayer.play();
-        });
+    // CUSTOM NAVIGATION BUTTON SKIP WIRES
+    function nextTrack() {
+        currentTrackIndex++;
+        loadTrack(currentTrackIndex);
+        audioPlayer.play().catch(e => console.log("Streaming initialized."));
     }
 
+    function prevTrack() {
+        currentTrackIndex--;
+        loadTrack(currentTrackIndex);
+        audioPlayer.play().catch(e => console.log("Streaming initialized."));
+    }
+
+    // Direct automated bridge tracking to play the next song when the current one finishes
     audioPlayer.addEventListener('ended', function() {
-        currentTrackIndex++;
-        if (currentTrackIndex < tracks.length) {
-            loadTrack(currentTrackIndex);
-            audioPlayer.play();
-        } else {
-            currentTrackIndex = 0;
-            loadTrack(currentTrackIndex);
-        }
+        nextTrack();
     });
 
+    // Run first initialization asset load on page bootup
     loadTrack(currentTrackIndex);
 </script>
 
