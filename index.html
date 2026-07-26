@@ -17,7 +17,7 @@
         .header-player {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             width: 100%;
             height: 60px;
             background: rgba(20, 20, 20, 0.95);
@@ -30,10 +30,11 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-width: 150px;
+            min-width: 160px;
             max-width: 250px;
             white-space: nowrap;
             overflow: hidden;
+            margin-right: 15px;
         }
 
         #song-title {
@@ -55,95 +56,39 @@
             display: flex;
             align-items: center;
             flex-grow: 1;
-            justify-content: center;
-            padding: 0 18px;
+            justify-content: flex-start;
+            max-width: 400px;
         }
 
         audio {
             width: 100%;
-            max-width: 180px;
-            height: 30px;
+            height: 32px;
+            outline: none;
         }
 
-        .playlist-toggle {
-            position: relative;
+        /* HARD FILTER TO STRIP DOWN MODERN BROWSER DOUBLE-VOLUME DUPLICATES */
+        audio::-webkit-media-controls-panel {
+            background-color: rgba(20, 20, 20, 0.95);
         }
-
-        .toggle-btn {
-            background: #7d4900;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
+        audio::-webkit-media-controls-volume-control-container,
+        audio::-webkit-media-controls-mute-button,
+        audio::-webkit-media-controls-volume-slider {
+            display: flex !important;
         }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 45px;
-            width: 320px;
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            z-index: 9999;
-            max-height: 250px;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        .dropdown-menu li {
-            padding: 10px 15px;
-            font-size: 0.85rem;
-            border-bottom: 1px solid #2a2a2a;
-            cursor: pointer;
-            transition: background 0.2s;
-            color: #ffffff;
-        }
-
-        .dropdown-menu li:hover { background: #282828; }
-        .dropdown-menu li.active { color: #7d4900; font-weight: bold; }
 
         @media (max-width: 768px) {
             .header-player {
                 height: 50px;
                 padding: 0 10px;
             }
-
             .track-info {
-                max-width: 110px;
+                display: none; /* Auto-hides song text on tiny phone view to fit header margins */
             }
-
-            #song-title {
-                font-size: display;
-            }
-
-            #artist-name {
-                display: none;
-            }
-
             .controls-wrapper {
-                padding: 0 5px;
+                max-width: 100%;
             }
-
             audio {
-                height: 16px;
-            }
-
-            .toggle-btn {
-                padding: 4px 8px;
-                font-size: 0.75rem;
-            }
-
-            .dropdown-menu {
-                width: 240px;
-                top: 40px;
+                height: 30px;
             }
         }
     </style>
@@ -160,9 +105,9 @@
         <audio id="audio-player" controls controlsList="nodownload noplaybackrate"></audio>
     </div>
 
-    <div class="playlist-toggle">
-        <button class="toggle-btn" onclick="toggleMenu()">Tracks ☰</button>
-       <ul class="dropdown-menu" id="menu-items">
+    <!-- Hidden memory bank keeps playlist processing active in background background without a visible screen tray layout -->
+    <ul id="menu-items" style="display: none !important;">
+
 https://static.wixstatic.com/mp3/d89c2f_fe37c70f927c489f898697b91b86be40.mp3 	Young Free & Single 1982	Sunfire	<li data-src="https://static.wixstatic.com/mp3/d89c2f_fe37c70f927c489f898697b91b86be40.mp3 " data-title="Young Free & Single 1982" data-artist="Sunfire"></li>
 https://static.wixstatic.com/mp3/d89c2f_d98c7413a761490f9f2fa373c2629a22.mp3	I Love Your Smile 1981	Shanice	<li data-src="https://static.wixstatic.com/mp3/d89c2f_d98c7413a761490f9f2fa373c2629a22.mp3" data-title="I Love Your Smile 1981" data-artist="Shanice"></li>
 https://static.wixstatic.com/mp3/d89c2f_1b09fbd5aab044e2acdad1dea992bd2f.mp3	I Like 1988	Guy	<li data-src="https://static.wixstatic.com/mp3/d89c2f_1b09fbd5aab044e2acdad1dea992bd2f.mp3" data-title="I Like 1988" data-artist="Guy"></li>
