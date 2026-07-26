@@ -8,92 +8,125 @@
         body {
             margin: 0;
             padding: 0;
-            background: transparent; /* Transparent so your black header shows through */
+            background: transparent;
             font-family: 'Proxima Nova', system-ui, -apple-system, sans-serif;
-            color: #ffffff; /* Forces text to bright white */
+            color: #ffffff;
             overflow: visible;
         }
 
+        /* Stack layout to place text neatly ABOVE the control strip buttons */
         .header-player {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
             height: 60px;
-            background: transparent; /* Changed from gray to completely clear background */
-            padding: 0 20px;
+            background: transparent;
+            padding: 5px 20px;
             box-sizing: border-box;
-            border-bottom: 0px solid #333;
         }
 
+        /* 1. SONG TITLE WRAPPER: Small, dim white font centered directly above the player */
         .track-info {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: center;
             justify-content: center;
-            min-width: 160px;
-            max-width: 250px;
-            white-space: nowrap;
-            overflow: hidden;
-            margin-right: 15px;
+            gap: 6px;
+            width: 100%;
+            margin-bottom: 4px;
+            text-align: center;
         }
 
         #song-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #ffffff; /* Bright white song name */
+            font-size: 0.72rem; /* Very small text parameter sizing */
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.45); /* Dimmed white value */
             text-overflow: ellipsis;
+            white-space: nowrap;
             overflow: hidden;
         }
 
         #artist-name {
-            font-size: 0.8rem;
-            color: #d1d1d1; /* Light silver artist name so it is legible but distinct */
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.3); /* Even dimmer silver brand text */
             text-overflow: ellipsis;
+            white-space: nowrap;
             overflow: hidden;
-            margin-top: 2px;
         }
 
+        /* 2. PLAYER CORE ALIGNMENT */
         .controls-wrapper {
             display: flex;
             align-items: center;
-            flex-grow: 1;
-            justify-content: flex-start;
-            max-width: 400px;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 450px;
         }
 
+        /* SMALL CUSTOM ARROW BUTTONS (<< and >>) */
+        .nav-btn {
+            background: transparent;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem; /* Noticeably smaller scale than the main play bar */
+            font-weight: bold;
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.65;
+            transition: opacity 0.2s;
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            opacity: 1; /* Brightens up slightly when hovered over */
+        }
+
+        /* CUSTOM BROWSER INTERFACE STYLING OVERRIDES */
         audio {
-            width: 100%;
-            height: 32px;
+            height: 30px;
             outline: none;
-            
-            /* THIS FLIPS DARK BROWSER CONTROLS/PLAY BUTTONS/VOLUME ICONS TO BRIGHT WHITE */
+            /* Inverts standard black browser buttons to pristine bright white */
             filter: invert(1) hue-rotate(180deg);
         }
 
-        /* Cleans out any duplicate background panel issues */
-        audio::-webkit-media-controls-panel {
-            background-color: #ffffff !important; 
+        /* REMOVES THE DRAGGING TIMELINE TRACK TRACKER CIRCLE ENTIRELY */
+        audio::-webkit-media-controls-timeline,
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            display: none !important;
         }
 
-        audio::-webkit-media-controls-volume-control-container,
-        audio::-webkit-media-controls-mute-button,
-        audio::-webkit-media-controls-volume-slider {
-            display: flex !important;
+        /* KEEPS ONLY CLEAN PLAY CONTROL AND VOLUME SLIDERS */
+        audio::-webkit-media-controls-panel {
+            background-color: #ffffff !important;
+            justify-content: center !important;
+        }
+
+        audio::-webkit-media-controls-play-button {
+            margin-right: 10px !important;
         }
 
         @media (max-width: 768px) {
             .header-player {
                 height: 50px;
-                padding: 0 10px;
+                padding: 2px 10px;
             }
             .track-info {
-                display: none; 
+                margin-bottom: 2px;
             }
-            .controls-wrapper {
-                max-width: 100%;
+            #song-title, #artist-name {
+                font-size: 0.68rem;
             }
             audio {
-                height: 30px;
+                height: 26px;
+                max-width: 150px;
             }
         }
     </style>
@@ -101,14 +134,25 @@
 <body>
 
 <div class="header-player">
+    <!-- Song details live directly centered above your navigation deck -->
     <div class="track-info">
         <div id="song-title">Loading...</div>
+        <div style="color: rgba(255,255,255,0.25); font-size: 0.7rem;">-</div>
         <div id="artist-name">Artist Name</div>
     </div>
 
     <div class="controls-wrapper">
+        <!-- Small Previous Arrow Button Component -->
+        <button class="nav-btn" onclick="prevTrack()">&lt;&lt;</button>
+
+        <!-- Native Audio Frame Container -->
         <audio id="audio-player" controls controlsList="nodownload noplaybackrate"></audio>
+
+        <!-- Small Next Arrow Button Component -->
+        <button class="nav-btn" onclick="nextTrack()">&gt;&gt;</button>
     </div>
+
+    <ul id="menu-items" style="display: none !important;">
 
     <ul id="menu-items" style="display: none !important;">
 https://static.wixstatic.com/mp3/d89c2f_fe37c70f927c489f898697b91b86be40.mp3 	Young Free & Single 1982	Sunfire	<li data-src="https://static.wixstatic.com/mp3/d89c2f_fe37c70f927c489f898697b91b86be40.mp3 " data-title="Young Free & Single 1982" data-artist="Sunfire"></li>
