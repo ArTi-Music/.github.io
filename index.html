@@ -8,9 +8,9 @@
         body {
             margin: 0;
             padding: 0;
-            background: transparent;
+            background: transparent; /* Transparent so your black header shows through */
             font-family: 'Proxima Nova', system-ui, -apple-system, sans-serif;
-            color: #ffffff;
+            color: #ffffff; /* Forces text to bright white */
             overflow: visible;
         }
 
@@ -20,7 +20,7 @@
             justify-content: center;
             width: 100%;
             height: 60px;
-            background: rgba(20, 20, 20, 0.95);
+            background: transparent; /* Changed from gray to completely clear background */
             padding: 0 20px;
             box-sizing: border-box;
             border-bottom: 0px solid #333;
@@ -38,15 +38,16 @@
         }
 
         #song-title {
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffffff; /* Bright white song name */
             text-overflow: ellipsis;
             overflow: hidden;
         }
 
         #artist-name {
             font-size: 0.8rem;
-            color: #b3b3b3;
+            color: #d1d1d1; /* Light silver artist name so it is legible but distinct */
             text-overflow: ellipsis;
             overflow: hidden;
             margin-top: 2px;
@@ -64,12 +65,16 @@
             width: 100%;
             height: 32px;
             outline: none;
+            
+            /* THIS FLIPS DARK BROWSER CONTROLS/PLAY BUTTONS/VOLUME ICONS TO BRIGHT WHITE */
+            filter: invert(1) hue-rotate(180deg);
         }
 
-        /* HARD FILTER TO STRIP DOWN MODERN BROWSER DOUBLE-VOLUME DUPLICATES */
+        /* Cleans out any duplicate background panel issues */
         audio::-webkit-media-controls-panel {
-            background-color: rgba(20, 20, 20, 0.95);
+            background-color: #ffffff !important; 
         }
+
         audio::-webkit-media-controls-volume-control-container,
         audio::-webkit-media-controls-mute-button,
         audio::-webkit-media-controls-volume-slider {
@@ -82,7 +87,7 @@
                 padding: 0 10px;
             }
             .track-info {
-                display: none; /* Auto-hides song text on tiny phone view to fit header margins */
+                display: none; 
             }
             .controls-wrapper {
                 max-width: 100%;
@@ -105,9 +110,7 @@
         <audio id="audio-player" controls controlsList="nodownload noplaybackrate"></audio>
     </div>
 
-    <!-- Hidden memory bank keeps playlist processing active in background background without a visible screen tray layout -->
     <ul id="menu-items" style="display: none !important;">
-
 https://static.wixstatic.com/mp3/d89c2f_fe37c70f927c489f898697b91b86be40.mp3 	Young Free & Single 1982	Sunfire	<li data-src="https://static.wixstatic.com/mp3/d89c2f_fe37c70f927c489f898697b91b86be40.mp3 " data-title="Young Free & Single 1982" data-artist="Sunfire"></li>
 https://static.wixstatic.com/mp3/d89c2f_d98c7413a761490f9f2fa373c2629a22.mp3	I Love Your Smile 1981	Shanice	<li data-src="https://static.wixstatic.com/mp3/d89c2f_d98c7413a761490f9f2fa373c2629a22.mp3" data-title="I Love Your Smile 1981" data-artist="Shanice"></li>
 https://static.wixstatic.com/mp3/d89c2f_1b09fbd5aab044e2acdad1dea992bd2f.mp3	I Like 1988	Guy	<li data-src="https://static.wixstatic.com/mp3/d89c2f_1b09fbd5aab044e2acdad1dea992bd2f.mp3" data-title="I Like 1988" data-artist="Guy"></li>
