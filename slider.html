@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ar.Ti Off The Wall Showcase</title>
+    <style>
+        /* Base Setup */
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Proxima Nova', system-ui, -apple-system, sans-serif;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 520px; /* Tall box footprint for the book-cover ratio */
+        }
+
+        /* 3D Scene Wrapper */
+        .slider-perspective {
+            perspective: 1200px;
+            width: 100%;
+            max-width: 1000px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Moving track */
+        .slider-track {
+            width: 260px; /* Book cover width proportion */
+            height: 390px; /* Book cover height proportion (1:1.5 ratio) */
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        /* Individual Card Frame */
+        .apparel-card {
+            position: absolute;
+            width: 260px;
+            height: 390px;
+            left: 0;
+            top: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                        opacity 0.6s, 
+                        filter 0.6s, 
+                        box-shadow 0.3s;
+            -webkit-user-drag: none;
+        }
+
+        .apparel-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Centers and auto-crops landscape or square imagery seamlessly */
+            pointer-events: none;
+            transition: transform 0.5s ease;
+        }
+
+        /* ======================================================== */
+        /* THE "OFF THE WALL" HOVER DESIGN INTERACTION              */
+        /* ======================================================== */
+        .apparel-card.center-slide:hover {
+            transform: scale(1.1) translateY(-10px) rotateX(10deg) rotateY(-5deg) !important;
+            box-shadow: 0 0 25px rgba(245, 237, 227, 0.6), 0 30px 60px rgba(0,0,0,0.8); /* MJ's glowing parchment sock accent */
+        }
+
+        .apparel-card.center-slide:hover img {
+            transform: scale(1.05); /* Soft, cinematic optical zoom into the thread fabric */
+        }
+
+        /* Navigation Arrows */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #f5ede3; /* Soft parchment cream theme color */
+            border: 1px solid rgba(245, 237, 227, 0.2);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: background 0.2s, color 0.2s, opacity 0.2s;
+            user-select: none;
+            opacity: 0.6;
+        }
+
+        .nav-arrow:hover {
+            background: #f5ede3;
+            color: #000000;
+            opacity: 1;
+        }
+
+        .left-arrow { left: 50px; }
+        .right-arrow { right: 50px; }
+
+        /* ======================================================== */
+        /* SMOOTH OVERLAY PRODUCT DETAILS POP-UP LAYOUT             */
+        /* ======================================================== */
+        .details-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Dims background layout row window view */
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .details-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .pop-card {
+            background: #121212;
+            border: 1px solid rgba(245, 237, 227, 0.15);
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            color: #f5ede3;
+        }
+
+        .details-overlay.active .pop-card {
+            transform: scale(1);
+        }
+
+        .close-pop {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: rgba(255,255,255,0.4);
+            transition: color 0.2s;
+        }
+        .close-pop:hover { color: #f5ede3; }
+
+        .pop-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+        .pop-artist { font-size: 0.9rem; color: rgba(245,237,227,0.5); margin-bottom: 20px; }
+        
+        .view-btn {
+            display: inline-block;
+            background: #7d4900; /* Warm brown theme highlight color */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .view-btn:hover { background: #965902; }
+
+        /* Smartphone scaling boundaries rules */
+        @media (max-width: 768px) {
+            body { height: 420px; }
+            .slider-track, .apparel-card { width: 180px; height: 270px; }
+            .nav-arrow { width: 38px; height: 38px; font-size: 1rem; }
+            .left-arrow { left: 15px; }
+            .right-arrow { right: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="slider-perspective">
+    <!-- Skip Handles -->
+    <button class="nav-arrow left-arrow" onclick="rotatePrev()">&#10094;</button>
+
+    <!-- 3D Rotation Core Container -->
+    <div class="slider-track" id="card-track">
+        <!-- THE LIST WILL AUTOMATICALLY RENDER HERE OUT OF YOUR PLAYLIST DATA BANK -->
+    </div>
+
+    <button class="nav-arrow right-arrow" onclick="rotateNext()">&#10095;</button>
+</div>
+
+<!-- Dynamic Display Overlay Pop-up Modal Wrapper -->
+<div class="details-overlay" id="pop-overlay" onclick="closePopup(event)">
+    <div class="pop-card">
+        <span class="close-pop" onclick="hidePopup()">&times;</span>
+        <div class="pop-title" id="modal-title">Item Title</div>
+        <div class="pop-artist" id="modal-artist">Collection Name</div>
+        <a href="#" class="view-btn" id="modal-link" target="_top">View Product Details</a>
+    </div>
+</div>
+
+<script>
+    // ====================================================================
+    // ======  YOUR EDITABLE APPAREL & IMAGE DATA BANK PLAYLIST SECTION ====
+    // ====================================================================
+    // Paste your direct Wix Image URLs and Product Page links inside the slots below!
+    const myShowcaseGear = [
+        { 
+            image: "https://wixstatic.com", 
+            title: "The Arcade Hood", 
+            artist: "Men's Poly DNA Collection",
+            link: "https://rofaiva.co.nz" 
+        },
+        { 
+            image: "https://wixstatic.com", 
+            title: "Ladiez Pasifika Hood", 
+            artist: "Women's Poly DNA Collection",
+            link: "https://rofaiva.co.nz" 
+        },
+        { 
+            image: "https://wixstatic.com", 
+            title: "Cotton Ar.T-Shirt Dress", 
+            artist: "Women's Clothing Collection",
+            link: "https://rofaiva.co.nz" 
+        },
+        { 
+            image: "https://wixstatic.com", 
+            title: "Custom Painting Collection", 
+            artist: "Shop Original Paintings",
+            link: "https://rofaiva.co.nz" 
+        },
+        { 
+            image: "https://wixstatic.com", 
+            title: "Ar.Ti Lifestyle Gear", 
+            artist: "Ar.Ti Lifestyle Drop",
+            link: "https://rofaiva.co.nz" 
+        }
+    ];
+
+    // ====================================================================
+    // ====== BACKGROUND CAROUSEL GENERATION ENGINE (DO NOT TOUCH) ========
+    // ====================================================================
+    const track = document.getElementById('card-track');
+    let currentIndex = 0;
+
+    // Build the visual markup nodes dynamically out of your Data Bank row length parameters
+    function buildSlider() {
+        track.innerHTML = '';
+        myShowcaseGear.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'apparel-card';
+            card.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
+            
+            // Set up click response action listeners
+            card.addEventListener('click', () => {
+                if (index === currentIndex) {
+                    // Clicked center active item: pop up detail card info wrapper panel frame
+                    showPopup(item);
+                } else {
+                    // Clicked background angled item: rotate item straight up to center stage
+                    currentIndex = index;
+                    updateSlider();
