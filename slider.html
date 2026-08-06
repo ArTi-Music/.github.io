@@ -17,7 +17,6 @@
             height: 520px;
         }
 
-        /* Pure black background container */
         .slider-wrapper {
             position: relative;
             width: 100%;
@@ -30,7 +29,6 @@
             border-radius: 12px;
         }
 
-        /* Simple, stable linear track layout */
         .slider-track {
             display: flex;
             align-items: center;
@@ -40,7 +38,6 @@
             width: max-content;
         }
 
-        /* RETRO SLANTED SLIDE DESIGN */
         .apparel-slide {
             width: 250px;
             height: 360px;
@@ -49,36 +46,32 @@
             cursor: pointer;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             border: 1px solid rgba(245, 237, 227, 0.2);
-            
-            /* The Retro Slant foundation */
             transform: skewX(-12deg); 
-            filter: brightness(0.7) sepia(20%); /* Grainy vintage tint when idle */
+            filter: brightness(0.7) sepia(20%); 
             transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
         }
 
         .apparel-slide img {
-            display: block;
-            width: 125%; /* Stretched slightly so the image text doesn't look cut off by the slant */
-            height: 100%;
-            object-fit: cover;
-            transform: skewX(12deg) scale(1.1); /* Keeps the photo itself looking straight inside the slanted frame */
+            display: block !important;
+            width: 130% !important; 
+            height: 100% !important;
+            object-fit: cover !important;
+            transform: skewX(12deg) scale(1.1); 
             transition: transform 0.4s ease;
             pointer-events: none;
         }
 
-        /* THE HOVER "BREAKOUT" EFFECT */
         .apparel-slide:hover {
-            transform: skewX(0deg) scale(1.08); /* Snaps straight and pops out closer to user */
-            filter: brightness(1.1) sepia(0%); /* Flashes into vibrant full definition color */
-            box-shadow: 0 0 25px #f5ede3, 0 20px 40px rgba(0,0,0,0.8); /* Elegant parchment cream glow outline */
+            transform: skewX(0deg) scale(1.08); 
+            filter: brightness(1.1) sepia(0%); 
+            box-shadow: 0 0 25px #f5ede3, 0 20px 40px rgba(0,0,0,0.8); 
             z-index: 99;
         }
 
         .apparel-slide:hover img {
-            transform: skewX(0deg) scale(1); /* Straightens the photo to match */
+            transform: skewX(0deg) scale(1); 
         }
 
-        /* Clean Navigation Arrows */
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -107,7 +100,6 @@
         .left-btn { left: 20px; }
         .right-btn { right: 20px; }
 
-        /* Detail Overlay Modal Popup */
         .popup-overlay {
             display: none;
             position: fixed;
@@ -216,7 +208,7 @@
 </div>
 
 <script>
-    // CLEANED IMAGE PLAYLIST CONFIGURATION DATA BANK
+    // FIXED DYNAMIC TRACK CODES: Directly routes to your live store asset tracks
     const myShowcaseGear = [
         { 
             image: "https://wixstatic.com", 
@@ -236,7 +228,6 @@
     let currentIndex = 0;
     let activeWixTargetUrl = "";
 
-    // Safely generate the linear slide cards
     myShowcaseGear.forEach((item, index) => {
         const slide = document.createElement('div');
         slide.className = 'apparel-slide';
@@ -251,15 +242,11 @@
 
     const slides = Array.from(track.children);
 
-    // BULLETPROOF SLIDE MOVEMENT SYSTEM (No overlapping mathematical crashes)
     function updateCarouselLayout() {
         if (slides.length === 0) return;
-        
-        // Calculate the exact pixel slide move based on item width and gaps
-        const slideWidth = slides[0].offsetWidth || 250;
+        const slideWidth = 250;
         const gap = 40; 
         const amountToMove = currentIndex * (slideWidth + gap);
-        
         track.style.transform = `translateX(-${amountToMove}px)`;
     }
 
@@ -273,7 +260,6 @@
         updateCarouselLayout();
     }
 
-    // Smooth background glide interval loop
     let glideTimer = setInterval(rotateNext, 4500);
 
     const wrapper = document.querySelector('.slider-wrapper');
@@ -299,3 +285,21 @@
 
     function goToWixProduct() {
         if (activeWixTargetUrl) {
+            window.open(activeWixTargetUrl, '_blank');
+        }
+    }
+
+    let touchStartX = 0;
+    wrapper.addEventListener('touchstart', e => touchStartX = e.touches.clientX, {passive: true});
+    wrapper.addEventListener('touchend', e => {
+        const diff = e.changedTouches.clientX - touchStartX;
+        if (Math.abs(diff) > 40) {
+            if (diff > 0) rotatePrev();
+            else rotateNext();
+        }
+    }, {passive: true});
+
+    updateCarouselLayout();
+</script>
+</body>
+</html>
