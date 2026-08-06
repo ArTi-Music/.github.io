@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar.Ti Off The Wall Showcase</title>
+    <title>Ar.Ti Slanted Billboard Showcase</title>
     <style>
         body {
             margin: 0;
@@ -17,6 +17,7 @@
             height: 520px;
         }
 
+        /* Pure black background container */
         .slider-wrapper {
             position: relative;
             width: 100%;
@@ -24,50 +25,60 @@
             height: 480px;
             display: flex;
             align-items: center;
-            justify-content: center;
             overflow: hidden;
             background: #000000;
             border-radius: 12px;
-            perspective: 1200px; 
         }
 
+        /* Simple, stable linear track layout */
         .slider-track {
-            position: relative;
-            width: 260px; 
-            height: 380px; 
-            transform-style: preserve-3d;
             display: flex;
-            justify-content: center;
             align-items: center;
+            gap: 40px;
+            padding: 0 50px;
+            transition: transform 0.5s ease-in-out;
+            width: max-content;
         }
 
+        /* RETRO SLANTED SLIDE DESIGN */
         .apparel-slide {
-            position: absolute;
-            width: 260px;
-            height: 380px;
-            border-radius: 6px;
+            width: 250px;
+            height: 360px;
+            border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, filter 0.6s;
-            transform-origin: center center;
-            -webkit-user-drag: none;
-            border: 1px solid rgba(245, 237, 227, 0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border: 1px solid rgba(245, 237, 227, 0.2);
+            
+            /* The Retro Slant foundation */
+            transform: skewX(-12deg); 
+            filter: brightness(0.7) sepia(20%); /* Grainy vintage tint when idle */
+            transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
         }
 
         .apparel-slide img {
-            display: block !important;
-            width: 100%;
+            display: block;
+            width: 125%; /* Stretched slightly so the image text doesn't look cut off by the slant */
             height: 100%;
             object-fit: cover;
+            transform: skewX(12deg) scale(1.1); /* Keeps the photo itself looking straight inside the slanted frame */
+            transition: transform 0.4s ease;
             pointer-events: none;
         }
 
+        /* THE HOVER "BREAKOUT" EFFECT */
         .apparel-slide:hover {
-            box-shadow: 0 0 25px #f5ede3, 0 25px 50px rgba(0,0,0,0.9) !important; 
-            filter: brightness(1.1) !important;
+            transform: skewX(0deg) scale(1.08); /* Snaps straight and pops out closer to user */
+            filter: brightness(1.1) sepia(0%); /* Flashes into vibrant full definition color */
+            box-shadow: 0 0 25px #f5ede3, 0 20px 40px rgba(0,0,0,0.8); /* Elegant parchment cream glow outline */
+            z-index: 99;
         }
 
+        .apparel-slide:hover img {
+            transform: skewX(0deg) scale(1); /* Straightens the photo to match */
+        }
+
+        /* Clean Navigation Arrows */
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -83,7 +94,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 99;
+            z-index: 999;
             transition: background 0.2s, color 0.2s;
             user-select: none;
         }
@@ -93,9 +104,10 @@
             color: #000000;
         }
 
-        .left-btn { left: 30px; }
-        .right-btn { right: 30px; }
+        .left-btn { left: 20px; }
+        .right-btn { right: 20px; }
 
+        /* Detail Overlay Modal Popup */
         .popup-overlay {
             display: none;
             position: fixed;
@@ -175,12 +187,14 @@
         .popup-btn:hover { background: #965900; }
 
         @media (max-width: 768px) {
-            body { height: 420px; }
-            .slider-wrapper { height: 380px; }
-            .slider-track, .apparel-slide { width: 180px; height: 260px; }
+            body { height: 400px; }
+            .slider-wrapper { height: 360px; }
+            .slider-track { gap: 20px; padding: 0 20px; }
+            .apparel-slide { width: 170px; height: 250px; transform: skewX(-8deg); }
+            .apparel-slide img { transform: skewX(8deg) scale(1.1); width: 120%; }
             .nav-arrow { width: 36px; height: 36px; font-size: 1rem; }
-            .left-btn { left: 10px; }
-            .right-btn { right: 10px; }
+            .left-btn { left: 5px; }
+            .right-btn { right: 5px; }
         }
     </style>
 </head>
@@ -202,18 +216,19 @@
 </div>
 
 <script>
+    // CLEANED IMAGE PLAYLIST CONFIGURATION DATA BANK
     const myShowcaseGear = [
         { 
-            image: "https://static.wixstatic.com/media/d89c2f_8a4a0ed48d0b4f8a9889ec1215bf0964~mv2.png/v1/fill/w_676,h_894,al_c,usm_0.66_1.00_0.01/d89c2f_8a4a0ed48d0b4f8a9889ec1215bf0964~mv2.png", 
+            image: "https://wixstatic.com", 
             title: "The Arcade Hood", 
             description: "Men's Premium heavy cotton drop. Designed for the streets, engineered for comfort.",
-            link: "https://www.rofaiva.co.nz/product-page/the-arcade-hood"
+            link: "https://rofaiva.co.nz"
         },
         { 
-            image: "https://static.wixstatic.com/media/d89c2f_0dee0cd4794a4d20be8e1107a5eba2db~mv2.png/v1/fill/w_663,h_894,al_c,usm_0.66_1.00_0.01/d89c2f_0dee0cd4794a4d20be8e1107a5eba2db~mv2.png", 
+            image: "https://wixstatic.com", 
             title: "Women's Pasifika Hood", 
             description: "Original Ar.Ti custom graphic work celebrating raw authentic culture.",
-            link: "https://www.rofaiva.co.nz/product-page/womens-pasifika-hood"
+            link: "https://rofaiva.co.nz"
         }
     ];
 
@@ -221,18 +236,14 @@
     let currentIndex = 0;
     let activeWixTargetUrl = "";
 
+    // Safely generate the linear slide cards
     myShowcaseGear.forEach((item, index) => {
         const slide = document.createElement('div');
         slide.className = 'apparel-slide';
         slide.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
         
         slide.addEventListener('click', () => {
-            if (index === currentIndex) {
-                openDetails(item);
-            } else {
-                currentIndex = index;
-                updateCarouselLayout();
-            }
+            openDetails(item);
         });
         
         track.appendChild(slide);
@@ -240,34 +251,16 @@
 
     const slides = Array.from(track.children);
 
+    // BULLETPROOF SLIDE MOVEMENT SYSTEM (No overlapping mathematical crashes)
     function updateCarouselLayout() {
-        const total = slides.length;
+        if (slides.length === 0) return;
         
-        slides.forEach((slide, index) => {
-            let offset = index - currentIndex;
-            
-            if (offset < -Math.floor(total / 2)) offset += total;
-            if (offset > Math.floor(total / 2)) offset -= total;
-
-            const absOffset = Math.abs(offset);
-            
-            if (offset === 0) {
-                slide.style.transform = `translateX(0) scale(1.1) rotateY(0deg) translateZ(50px)`;
-                slide.style.zIndex = 10;
-                slide.style.opacity = 1;
-                slide.style.pointerEvents = "auto";
-            } else if (offset > 0) {
-                slide.style.transform = `translateX(${offset * 140}px) scale(0.82) rotateY(-35deg) translateZ(0px)`;
-                slide.style.zIndex = 5 - offset;
-                slide.style.opacity = total === 2 ? 1 : 0.6; 
-                slide.style.pointerEvents = "auto";
-            } else if (offset < 0) {
-                slide.style.transform = `translateX(${offset * 140}px) scale(0.82) rotateY(35deg) translateZ(0px)`;
-                slide.style.zIndex = 5 - absOffset;
-                slide.style.opacity = total === 2 ? 1 : 0.6; 
-                slide.style.pointerEvents = "auto";
-            }
-        });
+        // Calculate the exact pixel slide move based on item width and gaps
+        const slideWidth = slides[0].offsetWidth || 250;
+        const gap = 40; 
+        const amountToMove = currentIndex * (slideWidth + gap);
+        
+        track.style.transform = `translateX(-${amountToMove}px)`;
     }
 
     function rotateNext() {
@@ -280,6 +273,7 @@
         updateCarouselLayout();
     }
 
+    // Smooth background glide interval loop
     let glideTimer = setInterval(rotateNext, 4500);
 
     const wrapper = document.querySelector('.slider-wrapper');
@@ -302,3 +296,6 @@
     function closeDetailsForce() {
         document.getElementById('item-popup').classList.remove('active');
     }
+
+    function goToWixProduct() {
+        if (activeWixTargetUrl) {
