@@ -5,85 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ar.Ti Off The Wall Showcase</title>
     <style>
-        /* Base Setup */
         body {
             margin: 0;
             padding: 0;
             background: transparent;
             font-family: 'Proxima Nova', system-ui, -apple-system, sans-serif;
-            overflow: visible;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 520px; /* Tall box footprint for the book-cover ratio */
+            height: 520px;
         }
 
-        /* 3D Scene Wrapper */
-        .slider-perspective {
-            perspective: 1200px;
+        .slider-wrapper {
+            position: relative;
             width: 100%;
             max-width: 1000px;
-            height: 100%;
+            height: 480px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            overflow: hidden;
+            background: #000000;
+            border-radius: 12px;
+            perspective: 1200px; 
         }
 
-        /* Moving track */
         .slider-track {
-            width: 260px; /* Book cover width proportion */
-            height: 390px; /* Book cover height proportion (1:1.5 ratio) */
             position: relative;
+            width: 260px; 
+            height: 380px; 
             transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Individual Card Frame */
-        .apparel-card {
+        .apparel-slide {
             position: absolute;
             width: 260px;
-            height: 390px;
-            left: 0;
-            top: 0;
+            height: 380px;
             border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             cursor: pointer;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
-                        opacity 0.6s, 
-                        filter 0.6s, 
-                        box-shadow 0.3s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, filter 0.6s;
+            transform-origin: center center;
             -webkit-user-drag: none;
+            border: 1px solid rgba(245, 237, 227, 0.15);
         }
 
-        .apparel-card img {
+        .apparel-slide img {
+            display: block !important;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Centers and auto-crops landscape or square imagery seamlessly */
+            object-fit: cover;
             pointer-events: none;
-            transition: transform 0.5s ease;
         }
 
-        /* ======================================================== */
-        /* THE "OFF THE WALL" HOVER DESIGN INTERACTION              */
-        /* ======================================================== */
-        .apparel-card.center-slide:hover {
-            transform: scale(1.1) translateY(-10px) rotateX(10deg) rotateY(-5deg) !important;
-            box-shadow: 0 0 25px rgba(245, 237, 227, 0.6), 0 30px 60px rgba(0,0,0,0.8); /* MJ's glowing parchment sock accent */
+        .apparel-slide:hover {
+            box-shadow: 0 0 25px #f5ede3, 0 25px 50px rgba(0,0,0,0.9) !important; 
+            filter: brightness(1.1) !important;
         }
 
-        .apparel-card.center-slide:hover img {
-            transform: scale(1.05); /* Soft, cinematic optical zoom into the thread fabric */
-        }
-
-        /* Navigation Arrows */
         .nav-arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             background: rgba(0, 0, 0, 0.7);
-            color: #f5ede3; /* Soft parchment cream theme color */
-            border: 1px solid rgba(245, 237, 227, 0.2);
+            color: #f5ede3;
+            border: 1px solid rgba(245, 237, 227, 0.3);
             width: 46px;
             height: 46px;
             border-radius: 50%;
@@ -92,194 +83,218 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 999;
-            transition: background 0.2s, color 0.2s, opacity 0.2s;
+            z-index: 99;
+            transition: background 0.2s, color 0.2s;
             user-select: none;
-            opacity: 0.6;
         }
 
         .nav-arrow:hover {
             background: #f5ede3;
             color: #000000;
-            opacity: 1;
         }
 
-        .left-arrow { left: 50px; }
-        .right-arrow { right: 50px; }
+        .left-btn { left: 30px; }
+        .right-btn { right: 30px; }
 
-        /* ======================================================== */
-        /* SMOOTH OVERLAY PRODUCT DETAILS POP-UP LAYOUT             */
-        /* ======================================================== */
-        .details-overlay {
+        .popup-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85); /* Dims background layout row window view */
-            z-index: 10000;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.3s ease;
         }
 
-        .details-overlay.active {
+        .popup-content {
+            background: #121212;
+            border: 1px solid rgba(245, 237, 227, 0.2);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active {
             display: flex;
             opacity: 1;
         }
 
-        .pop-card {
-            background: #121212;
-            border: 1px solid rgba(245, 237, 227, 0.15);
-            width: 90%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 8px;
-            text-align: center;
-            position: relative;
-            transform: scale(0.8);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            color: #f5ede3;
-        }
-
-        .details-overlay.active .pop-card {
+        .popup-overlay.active .popup-content {
             transform: scale(1);
         }
 
-        .close-pop {
+        .close-popup {
             position: absolute;
             top: 15px;
             right: 20px;
+            background: transparent;
+            color: #f5ede3;
+            border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: rgba(255,255,255,0.4);
-            transition: color 0.2s;
         }
-        .close-pop:hover { color: #f5ede3; }
 
-        .pop-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
-        .pop-artist { font-size: 0.9rem; color: rgba(245,237,227,0.5); margin-bottom: 20px; }
-        
-        .view-btn {
-            display: inline-block;
-            background: #7d4900; /* Warm brown theme highlight color */
-            color: #ffffff;
-            text-decoration: none;
+        .popup-title {
+            color: #f5ede3;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .popup-desc {
+            color: #b3b3b3;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .popup-btn {
+            background: #7d4900;
+            color: white;
+            border: none;
             padding: 10px 24px;
-            border-radius: 4px;
+            border-radius: 6px;
+            cursor: pointer;
             font-size: 0.9rem;
             font-weight: 600;
-            margin-top: 10px;
             transition: background 0.2s;
         }
-        .view-btn:hover { background: #965902; }
 
-        /* Smartphone scaling boundaries rules */
+        .popup-btn:hover { background: #965900; }
+
         @media (max-width: 768px) {
             body { height: 420px; }
-            .slider-track, .apparel-card { width: 180px; height: 270px; }
-            .nav-arrow { width: 38px; height: 38px; font-size: 1rem; }
-            .left-arrow { left: 15px; }
-            .right-arrow { right: 15px; }
+            .slider-wrapper { height: 380px; }
+            .slider-track, .apparel-slide { width: 180px; height: 260px; }
+            .nav-arrow { width: 36px; height: 36px; font-size: 1rem; }
+            .left-btn { left: 10px; }
+            .right-btn { right: 10px; }
         }
     </style>
 </head>
 <body>
 
-<div class="slider-perspective">
-    <!-- Skip Handles -->
-    <button class="nav-arrow left-arrow" onclick="rotatePrev()">&#10094;</button>
-
-    <!-- 3D Rotation Core Container -->
-    <div class="slider-track" id="card-track">
-        <!-- THE LIST WILL AUTOMATICALLY RENDER HERE OUT OF YOUR PLAYLIST DATA BANK -->
-    </div>
-
-    <button class="nav-arrow right-arrow" onclick="rotateNext()">&#10095;</button>
+<div class="slider-wrapper">
+    <button class="nav-arrow left-btn" onclick="rotatePrev()">&#10094;</button>
+    <div class="slider-track" id="main-carousel-track"></div>
+    <button class="nav-arrow right-btn" onclick="rotateNext()">&#10095;</button>
 </div>
 
-<!-- Dynamic Display Overlay Pop-up Modal Wrapper -->
-<div class="details-overlay" id="pop-overlay" onclick="closePopup(event)">
-    <div class="pop-card">
-        <span class="close-pop" onclick="hidePopup()">&times;</span>
-        <div class="pop-title" id="modal-title">Item Title</div>
-        <div class="pop-artist" id="modal-artist">Collection Name</div>
-        <a href="#" class="view-btn" id="modal-link" target="_top">View Product Details</a>
+<div class="popup-overlay" id="item-popup" onclick="closeDetails(event)">
+    <div class="popup-content">
+        <button class="close-popup" onclick="closeDetailsForce()">&times;</button>
+        <div class="popup-title" id="pop-title">Item Gear Drop</div>
+        <div class="popup-desc" id="pop-desc">Loading details...</div>
+        <button class="popup-btn" id="pop-link-btn" onclick="goToWixProduct()">View Full Product</button>
     </div>
 </div>
 
 <script>
-    // ====================================================================
-    // ======  YOUR EDITABLE APPAREL & IMAGE DATA BANK PLAYLIST SECTION ====
-    // ====================================================================
-    // Paste your direct Wix Image URLs and Product Page links inside the slots below!
-       const myShowcaseGear = [
+    const myShowcaseGear = [
         { 
-            image: "https://static.wixstatic.com/media/d89c2f_79074dfbc4b440fcb83fb29b1ccaddc5~mv2.png/v1/fill/w_676,h_894,al_c,usm_0.66_1.00_0.01/d89c2f_79074dfbc4b440fcb83fb29b1ccaddc5~mv2.png", 
+            image: "https://wixstatic.com", 
             title: "The Arcade Hood", 
-            description: "Built thick, engineered for the streets.",
-            link: "https://www.rofaiva.co.nz/product-page/the-arcade-hood"
+            description: "Men's Poly DNA Collection. Premium heavy cotton drop. Designed for the streets.",
+            link: "https://rofaiva.co.nz"
         },
         { 
             image: "https://wixstatic.com", 
             title: "Pasifika Hood", 
             description: "Original Ar.Ti custom graphic work celebrating raw authentic culture.",
             link: "https://rofaiva.co.nz"
-        },
-        { 
-            image: "https://static.wixstatic.com/media/d89c2f_79074dfbc4b440fcb83fb29b1ccaddc5~mv2.png/v1/fill/w_676,h_894,al_c,usm_0.66_1.00_0.01/d89c2f_79074dfbc4b440fcb83fb29b1ccaddc5~mv2.png", 
-            title: "Pasifika Hood", 
-            description: "Original Ar.Ti custom graphic work celebrating raw authentic culture.",
-            link: "https://rofaiva.co.nz"
-        },
-        { 
-            image: "https://wixstatic.com", 
-            title: "Ladiez Pasifika Hood", 
-            artist: "Women's Poly DNA Collection",
-            link: "https://rofaiva.co.nz" 
-        },
-        { 
-            image: "https://wixstatic.com", 
-            title: "Cotton Ar.T-Shirt Dress", 
-            artist: "Women's Clothing Collection",
-            link: "https://rofaiva.co.nz" 
-        },
-        { 
-            image: "https://wixstatic.com", 
-            title: "Custom Painting Collection", 
-            artist: "Shop Original Paintings",
-            link: "https://rofaiva.co.nz" 
-        },
-        { 
-            image: "https://wixstatic.com", 
-            title: "Ar.Ti Lifestyle Gear", 
-            artist: "Ar.Ti Lifestyle Drop",
-            link: "https://rofaiva.co.nz" 
         }
     ];
 
-    // ====================================================================
-    // ====== BACKGROUND CAROUSEL GENERATION ENGINE (DO NOT TOUCH) ========
-    // ====================================================================
-    const track = document.getElementById('card-track');
+    const track = document.getElementById('main-carousel-track');
     let currentIndex = 0;
+    let activeWixTargetUrl = "";
 
-    // Build the visual markup nodes dynamically out of your Data Bank row length parameters
-    function buildSlider() {
-        track.innerHTML = '';
-        myShowcaseGear.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'apparel-card';
-            card.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
+    myShowcaseGear.forEach((item, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'apparel-slide';
+        slide.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
+        
+        slide.addEventListener('click', () => {
+            if (index === currentIndex) {
+                openDetails(item);
+            } else {
+                currentIndex = index;
+                updateCarouselLayout();
+            }
+        });
+        
+        track.appendChild(slide);
+    });
+
+    const slides = Array.from(track.children);
+
+    function updateCarouselLayout() {
+        const total = slides.length;
+        slides.forEach((slide, index) => {
+            let offset = index - currentIndex;
             
-            // Set up click response action listeners
-            card.addEventListener('click', () => {
-                if (index === currentIndex) {
-                    // Clicked center active item: pop up detail card info wrapper panel frame
-                    showPopup(item);
-                } else {
-                    // Clicked background angled item: rotate item straight up to center stage
-                    currentIndex = index;
-                    updateSlider();
+            if (offset < -Math.floor(total / 2)) offset += total;
+            if (offset > Math.floor(total / 2)) offset -= total;
+
+            const absOffset = Math.abs(offset);
+            
+            if (offset === 0) {
+                slide.style.transform = `translateX(0) scale(1.1) rotateY(0deg) translateZ(50px)`;
+                slide.style.zIndex = 10;
+                slide.style.opacity = 1;
+                slide.style.filter = "none";
+            } else if (offset === 1 || (offset < 0 && absOffset === total - 1)) {
+                slide.style.transform = `translateX(150px) scale(0.82) rotateY(-40deg) translateZ(0px)`;
+                slide.style.zIndex = 5;
+                slide.style.opacity = 0.55;
+                slide.style.filter = "blur(1px) grayscale(30%)";
+            } else if (offset === -1 || (offset > 0 && absOffset === total - 1)) {
+                slide.style.transform = `translateX(-150px) scale(0.82) rotateY(40deg) translateZ(0px)`;
+                slide.style.zIndex = 5;
+                slide.style.opacity = 0.55;
+                slide.style.filter = "blur(1px) grayscale(30%)";
+            } else {
+                slide.style.transform = `translateX(${offset * 180}px) scale(0.5) translateZ(-300px)`;
+                slide.style.zIndex = 1;
+                slide.style.opacity = 0;
+            }
+        });
+    }
+
+    function rotateNext() {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateCarouselLayout();
+    }
+
+    function rotatePrev() {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        updateCarouselLayout();
+    }
+
+    let glideTimer = setInterval(rotateNext, 4500);
+
+    const wrapper = document.querySelector('.slider-wrapper');
+    wrapper.addEventListener('mouseenter', () => clearInterval(glideTimer));
+    wrapper.addEventListener('mouseleave', () => glideTimer = setInterval(rotateNext, 4500));
+
+    function openDetails(item) {
+        document.getElementById('pop-title').textContent = item.title;
+        document.getElementById('pop-desc').textContent = item.description;
+        activeWixTargetUrl = item.link;
+        document.getElementById('item-popup').classList.add('active');
+    }
+
+    function closeDetails(e) {
+        if (e.target.id === 'item-popup') {
