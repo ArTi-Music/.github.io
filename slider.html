@@ -26,7 +26,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            background: #D3D3D3;
+            background: transparent; /* FIXED: Changed from grey to transparent to show your page background */
             border-radius: 12px;
             perspective: 1200px; 
         }
@@ -53,7 +53,7 @@
             transform-origin: center center;
             -webkit-user-drag: none;
             border: 1px solid rgba(245, 237, 227, 0.15);
-            opacity: 0; 
+            opacity: 0; /* Stays hidden initially until JS calculates positions */
         }
 
         .apparel-slide img {
@@ -193,7 +193,7 @@
     <button class="nav-arrow left-btn" onclick="rotatePrev()">❮</button>
     <div class="slider-track" id="main-carousel-track">
         
-        <!-- FIXED IMAGE SOURCE LINKS: Matching your exact text capitalization and web space encoding! -->
+        <!-- FIXED IMAGE SOURCE LINKS -->
         <div class="apparel-slide" onclick="handleSlideClick(0)">
             <img src="arcadehood.png" alt="The Arcade Hood">
         </div>
@@ -217,15 +217,16 @@
 <script>
     const myShowcaseGear = [
         { 
-            title: "Arcade Hood", 
+            title: "The Arcade Hood", 
             description: "Men's Premium heavy cotton drop. Designed for the streets, engineered for comfort.",
-            link: "arti-music.github.io/arcadehood.png"
+            link: "https://github.io"
         },
         { 
             title: "Women's Pasifika Hood", 
             description: "Original Ar.Ti custom graphic work celebrating raw authentic culture.",
-            link: "arti-music.github.io/womenspasifikahood.png"
+            link: "https://github.io"
         }
+        // 💡 FUTURE ADDITIONS: You can add more product cards down here easily!
     ];
 
     const track = document.getElementById('main-carousel-track');
@@ -249,26 +250,36 @@
         slides.forEach((slide, index) => {
             let offset = index - currentIndex;
             
-            if (offset < -Math.floor(total / 2)) offset += total;
-            if (offset > Math.floor(total / 2)) offset -= total;
+            // Scalable wrap-around calculations
+            if (total > 2) {
+                if (offset < -Math.floor(total / 2)) offset += total;
+                if (offset > Math.floor(total / 2)) offset -= total;
+            } else {
+                // Precise mathematical adjustment tailored for a 2-item baseline
+                if (offset < -0.5) offset += total;
+                if (offset > 0.5) offset -= total;
+            }
 
             const absOffset = Math.abs(offset);
             
             if (offset === 0) {
+                // Focus styling for center product
                 slide.style.transform = `translateX(0) scale(1.1) rotateY(0deg) translateZ(60px)`;
                 slide.style.zIndex = "10";
                 slide.style.opacity = "1";
                 slide.style.filter = "none";
                 slide.style.pointerEvents = "auto";
             } else if (offset > 0) {
+                // 3D placement for right-leaning side elements
                 slide.style.transform = `translateX(${offset * 150}px) scale(0.85) rotateY(-40deg) translateZ(0px)`;
-                slide.style.zIndex = String(5 - offset);
+                slide.style.zIndex = String(5 - Math.ceil(absOffset));
                 slide.style.opacity = "1"; 
                 slide.style.filter = "blur(1px) brightness(0.6)";
                 slide.style.pointerEvents = "auto";
             } else if (offset < 0) {
+                // 3D placement for left-leaning side elements
                 slide.style.transform = `translateX(${offset * 150}px) scale(0.85) rotateY(40deg) translateZ(0px)`;
-                slide.style.zIndex = String(5 - absOffset);
+                slide.style.zIndex = String(5 - Math.ceil(absOffset));
                 slide.style.opacity = "1"; 
                 slide.style.filter = "blur(1px) brightness(0.6)";
                 slide.style.pointerEvents = "auto";
@@ -286,19 +297,7 @@
         updateCarouselLayout();
     }
 
+    // Auto glide setup
     let glideTimer = setInterval(rotateNext, 4500);
 
     const wrapper = document.querySelector('.slider-wrapper');
-    wrapper.addEventListener('mouseenter', () => clearInterval(glideTimer));
-    wrapper.addEventListener('mouseleave', () => glideTimer = setInterval(rotateNext, 4500));
-
-    function openDetails(index) {
-        const item = myShowcaseGear[index];
-        document.getElementById('pop-title').textContent = item.title;
-        document.getElementById('pop-desc').textContent = item.description;
-        activeWixTargetUrl = item.link;
-        document.getElementById('item-popup').classList.add('active');
-    }
-
-    function closeDetails(e) {
-        if (e.target.id === 'item-popup') {
